@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quote Generator</title>
+  <link rel="shortcut icon" href="resources/favicon.ico" type="image/x-icon">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #424e64;
+      color: #E3E8EF;
+    }
+
+    .container {
+      height: 290px;
+      width: 440px;
+      border-radius: 8px;
+      background-color: #1c2129;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .author-div {
+      padding: 35px 20px 10px;
+    }
+
+    .author-div h2{
+      font-size: 1.2rem;
+      letter-spacing: 1.5px;
+    }
+
+    .tag-div {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 120px;
+    }
+
+    .tag-div h4 {
+      font-size: 0.7rem;
+      border: 1px solid #AEB0FF;
+      color: #AEB0FF;
+      padding: 6px 20px;
+      border-radius: 18px;
+    }
+
+    .quote-div {
+      padding: 10px 40px;
+      line-height: 1.5;
+    }
+
+    .quote-div h1 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 10px 0;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-around;
+      width: 300px;
+      height: 50px;
+      padding: 5px 0;
+    }
+
+    .btn{
+      display: flex;
+      align-items: center;
+      padding: 8px 25px;
+      background-color: #1c2129;
+      border: none;
+      border-radius: 18px;
+      color: #E3E8EF;
+    }
+
+    .btn img {
+      width: 20px;
+      height: 20px;
+      margin-left: 7px;
+    }
+
+    .btn:hover {
+      border: 0.5px solid #AEB0FF;
+      transition: 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="author-div">
+      <h2 id="author"></h2>
+    </div>
+    <div class="tag-div">
+      <h4 id="tagOne"></h4>
+      <h4 id="tagTwo"></h4>
+    </div>
+    <div class="quote-div">
+      <h1 id="quote"></h1>
+    </div>
+  </div>
+  <div class="btn-container">
+    <button id="btn-random" class="btn">Random 
+      <img src="resources/regroup.svg" alt="this is random icon">
+    </button>
+    <button id="btn-share" class="btn">Share
+      <img src="resources/link.svg" alt="this is share icon">
+    </button>
+  </div>
+  <script>
+    const author = document.getElementById("author");
+    const quote = document.getElementById("quote");
+    const tagOne = document.getElementById("tagOne");
+    const tagTwo = document.getElementById("tagTwo");
+    const btnRandom = document.getElementById("btn-random");
+    const btnShare = document.getElementById("btn-share");
+
+
+    fetchData = () => {
+      fetch(
+        "https://raw.githubusercontent.com/devchallenges-io/curriculum/refs/heads/main/3-javascript/challenges/group_1/data/random-quotes.json"
+      )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const randomQuote = data[randomIndex];
+        author.textContent = randomQuote.author;
+        quote.textContent = randomQuote.quote;
+        tagOne.textContent = randomQuote.tags[0];
+        tagTwo.textContent = randomQuote.tags[1];
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log('Text copied to clipboard!');
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        return false;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchData);
+    btnRandom.addEventListener("click", fetchData);
+    btnShare.addEventListener("click", () => {
+      copyToClipboard(quote.textContent);
+      if (copyToClipboard(quote.textContent)) {
+        alert("Quote copied to clipboard!");
+      } else {
+        alert("Failed to copy quote!");
+      }
+    });
+  </script>
+</body>
+</html>
